@@ -73,7 +73,7 @@ def generate_launch_description():
         name='urdf_spawner',
         arguments=['-topic', '/robot_description', '-entity', 'robot', '-z', '0.5', '-unpause'],
         output='screen',
-    )
+    ) # under dir: /opt/ros/humble//lib/gazebo_ros/spawn_entity.py
 
     return LaunchDescription([
         gui_arg,
