@@ -2,6 +2,7 @@
 
 sudo apt install ros-humble-ros2-control
 sudo apt install ros-humble-gazebo-ros2-control ros-humble-gazebo-ros-pkgs
+只有装上了，才能用gazebo-ros2-control插件，否则甚至不会报错！
 
 ## WARN
 
