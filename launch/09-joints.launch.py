@@ -67,17 +67,17 @@ def generate_launch_description():
         arguments=['-d', LaunchConfiguration('rvizconfig')],
     )
 
-    # load_joint_state_controller = ExecuteProcess(
-    #     cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
-    #          'joint_state_broadcaster'],
-    #     output='screen'
-    # )
+    load_joint_state_controller = ExecuteProcess(
+        cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
+             'joint_state_broadcaster'],
+        output='screen'
+    )
 
     return LaunchDescription([
         package_arg,
         model_arg,
-        # rvizconfig_arg,
+        rvizconfig_arg,
         gazebo_launch,
-        # rviz_node,
-        # load_joint_state_controller,
+        rviz_node,
+        load_joint_state_controller,
     ])
