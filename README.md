@@ -140,10 +140,10 @@ For every non-fixed joint, we need to add information about the joint in the `ro
       <state_interface name="velocity"/>
     </joint>
 ```
- * Note that the joint name here matches the joint name from the standard URDF `<joint>` tag.
+ * Note that **the joint name here matches the joint name from the standard URDF `<joint>` tag**.
  * For the moment, let us focus on the `state_interface`s, in which we specify that we want to publish both position and velocity of this joint.
 
-You can run this URDF with our previous launch configuration.
+You can run this URDF with our previous launch configuration. （launch不变，还是只需要joint state broadcaster这个controller，但是urdf和yaml换了，就算yaml有head controller，不在launch中添加就不能控制）
 
     ros2 launch urdf_sim_tutorial 09-joints.launch.py urdf_package_path:=urdf/10-firsttransmission.urdf.xacro
 
@@ -165,9 +165,14 @@ effort:
 - .nan
 ```
 
+(ros2 control list_controllers + ros2 topic echo /joint_states)
+
 We could continue adding transmissions for all the non-fixed joints (and we will) so that all the joints are properly published. But, there's more to life than just looking at robots. We want to control them. So, let's get another controller in here.
 
 ## Joint Control
+
+urdf和yaml都不用换，只需要在launch文件中添加controller即可
+
 [Here's](config/head.yaml) the next controller config we're adding.
 
 ```yaml
