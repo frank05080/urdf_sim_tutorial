@@ -60,7 +60,7 @@ def generate_launch_description():
     )
 
     description_launch_py = IncludeLaunchDescription(
-        PathJoinSubstitution([FindPackageShare('urdf_launch'), 'launch', 'description.launch.py']),
+        PathJoinSubstitution([FindPackageShare('urdf_tutorial'), 'launch', 'description.launch.py']),
         launch_arguments={
             'urdf_package': LaunchConfiguration('urdf_package'),
             'urdf_package_path': LaunchConfiguration('urdf_package_path')}.items()

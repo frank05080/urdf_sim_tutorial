@@ -1,3 +1,11 @@
+## Prereq
+
+sudo apt install ros-humble-ros2-control
+
+## WARN
+
+urdf_sim_tutorial也是使用apt install安装的包，建议只source ./install/setup.bash，而不要 source /opt/ros/humble/setup.bash
+
 # urdf_sim_tutorial
 See the tutorials over at http://wiki.ros.org/urdf_tutorial
 
@@ -21,7 +29,7 @@ This launch file
 
 However, it doesn't do anything, and is missing lots of key information that ROS would need to use this robot. Previously we had been using [joint_state_publisher](http://wiki.ros.org/joint_state_publisher) to specify the pose of each joint. However, the robot itself should provide that information in the real world or in Gazebo. Yet without specifying that, Gazebo doesn't know to publish that information.
 
-To get the robot to be interactive (with you and ROS), we need to specify two things: Plugins and Transmissions.
+**To get the robot to be interactive (with you and ROS), we need to specify two things: Plugins and Transmissions.**
 
 ### Side note: Configuring Meshes
 ![Robot with missing meshes](doc/NoMesh.png)
@@ -44,9 +52,9 @@ This is because your URDF package needs to explicitly tell Gazebo where to load 
 ## Gazebo Plugin
 To get ROS 2 to interact with Gazebo, we have to dynamically link to the ROS library that will tell Gazebo what to do. Theoretically, this allows for other Robot Operating Systems to interact with Gazebo in a generic way. In practice, its just ROS.
 
-Specifically, Gazebo / ROS 2 interaction all happens by linking to a ROS 2 Control library, with new URDF tags.
+**Specifically, Gazebo / ROS 2 interaction all happens by linking to a ROS 2 Control library, with new URDF tags.**
 
-We specify the following in the URDF, right before the closing `</robot>` tag:
+We specify the following in the URDF (09a-minimal.urdf.xacro), right before the closing `</robot>` tag:
 
 ```xml
   <ros2_control name="GazeboSystem" type="system">
@@ -227,3 +235,44 @@ In addition to loading the above configuration, this also opens the !RobotSteeri
 ![Gazebo with Driving Interface](doc/DrivingInterface.png)
 
 Congrats! Now you're simulating robots with URDF.
+
+
+
+--------------------------------
+
+您遇到的错误消息指出，在尝试使用`ros2 control load_controller`命令时，`--set-state`参数的值`start`是无效的。有效的选项包括`configured`、`inactive`、`active`。这意味着您不能直接将控制器设置为`start`状态，您需要首先将其设置为`active`。
+
+在ROS 2控制框架中，控制器的生命周期状态管理非常重要。要启动一个控制器，通常需要按照以下步骤进行：
+
+1. **加载控制器**：首先，控制器需要被加载到控制器管理器中。此时，控制器处于`unconfigured`状态。
+2. **配置控制器**：加载后，控制器需要被配置。这通常涉及到为控制器设置参数等准备工作。配置成功后，控制器进入`configured`状态。
+3. **激活控制器**：配置完成后，控制器可以被激活，进入`active`状态，开始执行其控制循环。
+
+因此，您应该先使用`--set-state active`选项而不是`start`。下面是修正后的代码示例：
+
+```python
+load_joint_state_controller = ExecuteProcess(
+    cmd=['ros2', 'control', 'load_controller', '--set-state', 'active', 'joint_state_broadcaster'],
+    output='screen'
+)
+```
+
+请注意，根据您的ROS 2控制版本和配置，具体的命令和步骤可能会有所不同。如果您的系统需要分步执行配置和激活操作，那么您可能需要将这个过程分解为两步：
+
+1. **配置控制器**：
+    ```python
+    configure_joint_state_controller = ExecuteProcess(
+        cmd=['ros2', 'control', 'set_controller_state', '--set-state', 'configured', 'joint_state_broadcaster'],
+        output='screen'
+    )
+    ```
+
+2. **然后激活控制器**：
+    ```python
+    activate_joint_state_controller = ExecuteProcess(
+        cmd=['ros2', 'control', 'set_controller_state', '--set-state', 'active', 'joint_state_broadcaster'],
+        output='screen'
+    )
+    ```
+
+请根据您的系统和ROS 2控制的具体版本调整上述命令。如果命令或参数有所不同，请参考您的`ros2 control`包或相关文档以获取正确的命令语法。
