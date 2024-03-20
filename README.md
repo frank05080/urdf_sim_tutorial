@@ -1,6 +1,7 @@
 ## Prereq
 
 sudo apt install ros-humble-ros2-control
+sudo apt install ros-humble-gazebo-ros2-control ros-humble-gazebo-ros-pkgs
 
 ## WARN
 
